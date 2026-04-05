@@ -7,10 +7,23 @@ const formData = {
 };
 const formStateKey = 'feedback-form-state';
 
+window.addEventListener('load', fillForm);
+
 feedbackForm.addEventListener('input', handleInput);
 feedbackForm.addEventListener('submit', handleSubmit);
 
-window.addEventListener('load', fillForm);
+function fillForm() {
+  if (window.localStorage.getItem(formStateKey) !== null) {
+    const parsedFormState = JSON.parse(
+      window.localStorage.getItem(formStateKey)
+    );
+    const keys = Object.keys(parsedFormState);
+    for (const key of keys) {
+      feedbackForm.elements[key].value = parsedFormState[key];
+      formData[key] = parsedFormState[key];
+    }
+  }
+}
 
 function handleInput(event) {
   formData[event.target.name] = event.target.value.trim();
@@ -27,18 +40,5 @@ function handleSubmit(event) {
     formData.email = '';
     formData.message = '';
     feedbackForm.reset();
-  }
-}
-
-function fillForm() {
-  if (window.localStorage.getItem(formStateKey) !== null) {
-    const parsedFormState = JSON.parse(
-      window.localStorage.getItem(formStateKey)
-    );
-    const keys = Object.keys(parsedFormState);
-    for (const key of keys) {
-      feedbackForm.elements[key].value = parsedFormState[key];
-      formData[key] = parsedFormState[key];
-    }
   }
 }
